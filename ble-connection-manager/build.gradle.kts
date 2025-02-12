@@ -33,9 +33,7 @@ android {
     }
 }
 
-dependencies {
-    implementation(libs.androidx.core.ktx)
-}
+dependencies {}
 
 publishing {
     publications {
@@ -46,7 +44,7 @@ publishing {
                 // Provide additional POM metadata if needed
                 groupId = "com.github.JohanGarridoPSL"
                 artifactId = "ble-connection-manager"
-                version = "1.1.0"
+                version = "1.1.1"
             }
         }
     }
