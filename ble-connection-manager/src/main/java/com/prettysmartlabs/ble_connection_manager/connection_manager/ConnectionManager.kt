@@ -29,9 +29,9 @@
  * - onDisconnectDueToFailure callback is invoked when a device is disconnected due to a failure in the connection.
  * - onFailedToDisconnect callback is invoked when a disconnection to a device fails.
  * - onGattDisconnected callback is invoked when a gatt disconnects.
- * - analyzeConnectionError function has been added to handle connection errors.
+ * - analyzeConnectionError function and the sealed class DisconnectionError have been added to handle connection errors
  * - teardownConnection function has been added to handle connection errors.
- *
+ * - onBondStateChanged callback is invoked when the bond state of a device changes.
  */
 package com.prettysmartlabs.ble_connection_manager.connection_manager
 
@@ -1004,6 +1004,13 @@ object ConnectionManager {
                     val bondTransition = "${previousBondState.toBondStateDescription()} to " +
                             bondState.toBondStateDescription()
                     Log.w(TAG, "${device?.address} bond state changed | $bondTransition")
+                    listenersAsSet.forEach {
+                        it.get()?.onBondStateChanged?.invoke(
+                            device,
+                            previousBondState,
+                            bondState
+                        )
+                    }
                 }
             }
         }
@@ -1044,12 +1051,12 @@ object ConnectionManager {
 }
 
 // Common GATT codes.
-const val GATT_SUCCESS = 0                 // Indicates success.
-const val GATT_DISCONNECT_NO_ERROR = 100                 // Indicates success.
+const val GATT_SUCCESS = 0                  // Indicates success.
+const val GATT_DISCONNECT_NO_ERROR = 100    // Indicates success.
 const val DEVICE_NOT_CONNECTED = -100       // Indicates the device is not connected.
-const val GATT_CONNECTION_LOST = 8       // Indicates the connection was lost.
-const val GATT_ERROR_GENERIC = 133         // A generic BLE connection error (often ambiguous).
-const val GATT_INTERNAL_ERROR = 129        // An internal error from the BLE stack.
+const val GATT_CONNECTION_LOST = 8          // Indicates the connection was lost.
+const val GATT_ERROR_GENERIC = 133          // A generic BLE connection error (often ambiguous).
+const val GATT_INTERNAL_ERROR = 129         // An internal error from the BLE stack.
 
 /**
  * Represents the different types of disconnection errors that can occur.

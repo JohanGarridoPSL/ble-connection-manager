@@ -25,6 +25,9 @@
  * - onGattDiscoveringServices callback added.
  * - onConnectFailure callback added.
  * - onfailedToDisconnect callback added.
+ * - onDisconnectDueToFailure callback added.
+ * - onGattDisconnected callback added.
+ * - onBondStateChanged callback added.
  */
 package com.prettysmartlabs.ble_connection_manager.connection_manager
 
@@ -59,6 +62,7 @@ import android.bluetooth.BluetoothGattDescriptor
  * - [onDisconnectDueToFailure] - Called when a connection to a device fails.
  * - [onFailedToDisconnect] - Called when a disconnection to a device fails.
  * - [onGattDisconnected] - Called when a gatt disconnects.
+ * - [onBondStateChanged] - Called when the bond state of a device changes.
  */
 class ConnectionEventListener {
 
@@ -200,7 +204,7 @@ class ConnectionEventListener {
      * Callback invoked when a disconnection to a device fails.
      *
      * @param device The [BluetoothDevice] that failed to disconnect.
-     * @param error The [ConnectionError] that describes the failure.
+     * @param error The [DisconnectionError] that describes the failure.
      */
     var onFailedToDisconnect: ((device: BluetoothDevice, error: DisconnectionError) -> Unit)? = null
 
@@ -209,6 +213,19 @@ class ConnectionEventListener {
      *
      * @param device The [BluetoothDevice] that is being disconnected.
      */
-    var onGattDisconnected: ((BluetoothDevice) -> Unit)? = null
+    var onGattDisconnected: ((device: BluetoothDevice) -> Unit)? = null
+
+    /**
+     * Callback invoked when the bond state of a device changes. Since this states are retrieved by
+     * a broadcastReceiver (inside ConnectionManager), information might be lost, so it is
+     * recommended to check the device is not null and previousBondState and bondState are not the
+     * default value -1.
+     *
+     * @param device [device] The [BluetoothDevice] whose bond state changed.
+     * @param previousBondState The previous bond state of the device. -1 if unknown.
+     * @param bondState The new bond state of the device. -1 if unknown.
+     *
+     */
+    var onBondStateChanged: ((device: BluetoothDevice?, previousBondState: Int, bondState: Int) -> Unit)? = null
 
 }

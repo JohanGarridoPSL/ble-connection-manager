@@ -44,7 +44,7 @@ publishing {
                 // Provide additional POM metadata if needed
                 groupId = "com.github.JohanGarridoPSL"
                 artifactId = "ble-connection-manager"
-                version = "1.1.1"
+                version = "1.2.0"
             }
         }
     }
